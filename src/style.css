@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+    --font-jakarta : "Plus Jakarta Sans";    
+    --font-sora : "Sora";    
+}
+
+.navitem{
+    @apply block h-1 w-12 bg-zinc-100
+}
+
+.navanimate-enter-active {
+  transition: all 0.1s;
+}
+
+.navanimate-leave-active {
+  transition: all 0.1s ;
+}
+
+.navanimate-enter-from,
+.navanimate-leave-to {
+    @apply opacity-0;  
+}
