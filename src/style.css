@@ -8,6 +8,9 @@
 .navitem{
     @apply block h-1 w-12 bg-zinc-100
 }
+.statusbutton{
+  @apply border-2 font-jakarta text-xl font-bold shadow-[4px_4px_0_black] px-2 py-1 rounded-md 
+}
 
 .navanimate-enter-active {
   transition: all 0.1s;

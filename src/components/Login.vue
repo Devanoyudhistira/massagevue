@@ -18,8 +18,7 @@ export default {
             if (error) {
                     console.log(error)   
                 return
-            }
-            console.log(error)
+            }            
         }
     },
 }

@@ -1,11 +1,14 @@
 <script>
 import MessageItems from './components/MessageItems.vue';
+import {VueSpinner,VueSpinnerTail} from "vue3-spinners"
 import Login from './components/Login.vue'
 import supabase from './library/supabase';
 export default {
     components: {
         MessageItems,
-        Login
+        Login,
+        VueSpinner,
+        VueSpinnerTail
     },
     data() {
         return {
@@ -19,9 +22,7 @@ export default {
     },
     mounted() {
         supabase.auth.onAuthStateChange((_event, session) => {
-            this.admin = !!session
-            console.log('AUTH EVENT:', _event)
-            console.log('SESSION:', session)
+            this.admin = !!session            
         })
     },
     methods: {
@@ -44,10 +45,11 @@ export default {
         <Transition name="navanimate">
             <div v-if="shownav" class="w-screen h-screen bg-zinc-800/50 fixed top-0 left-0"></div>
         </Transition>
-        <MessageItems isadmin="this.admin" />
+        <MessageItems isadmin="admin" />
         <!-- <Login /> -->
     </main>
-    <div v-else >
-         <h1 class="text-4xl font-sora" > loading.... </h1>
+    <div v-else class="w-full h-screen flex flex-col justify-center items-center" >
+        <VueSpinnerTail size="150" color="orange" />
+         <h1 class="text-6xl text-orange-500 font-bold font-sora " > loading.... </h1>
     </div>
 </template>
