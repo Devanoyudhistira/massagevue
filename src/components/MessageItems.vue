@@ -1,19 +1,23 @@
 <script>
 import supabase from '@/library/supabase.js';
 import dayjs from '@/library/day.js';
+import Backdrop from './backdrop.vue';
 
 export default {
+    components: { Backdrop },
+
     data() {
         return {
             customerData: [],
             loading: true,
             imgpreview: false,
             previewAsset: "",
-            statusbutton: false
+            statusbutton: false,
+            formopen:false
         }
     },
-    props: ["isadmin","messagedata"],
-    methods: {        
+    props: ["isadmin", "messagedata"],
+    methods: {
         sendingWa(number) {
             let massage = "barang sudah selesai diperbaiki segera datang ke kantor"
             const encodedMessage = encodeURIComponent(massage);
@@ -25,37 +29,57 @@ export default {
         created(date) {
             return dayjs(date).fromNow()
         },
-        openpreview(image) {            
+        openpreview(image) {
             this.imgpreview = true
         },
         closepreview() {
             this.imgpreview = false
         },
-       async addproject() {
+        closeform() {
+            this.formopen = false
+        },
+        async addproject() {
             const { data, error } = await supabase
-                .schema('demoservice').from('products')
+                .schema('demoservice').from('workTodo')
                 .insert({
-                    AtasNama: "productname",
-                    Deskripsikerusakan: "",
-                    image: "namafilerandom",
-                    status: false,
-                    biaya:123,
-                    nomer:12223,
-                    Namabarang:""
+                    AtasNama: this.$refs.atasnama.value,
+                    Deskripsikerusakan: "tidak keluar suara",
+                    Image: "namafilerandom",
+                    Status: "pending",
+                    Biaya: 0.00,
+                    Nomer_hp:this.$refs.nomorhp.value,
+                    Namabarang: this.$refs.namaproduk.value
                 }).select()
                 .single()
+                console.log(data)
+                console.log(error)
+        },
+        statusClass(itemStatus) {
+            if (itemStatus === 'finish') {
+                return 'bg-blue-400'
+            } else if (itemStatus === 'pending') {
+                return 'bg-yellow-400'
+            } else {
+                return 'bg-red-600'
+            }
         }
     },
-    mounted(){},
-    watch: {},    
-    
+    mounted() {
+        console.log(this.messagedata)
+    },
+    computed: {},
+    watch: {},
+
 }
 </script>
 
 <template>
-    <article v-for="items in messagedata" class=" w-full grid grid-cols-1 gap-4 place-items-center">
-        <div class="w-90 relative px-3 py-2 gap-4 rounded-xl overflow-hidden bg-blue-400 border-3 tranform origin-top border-blue-600 shadow-[4px_4px_0_blue] font-sans flex flex-col justify-between transition duration-300"
-            :class="statusbutton ? 'h-82' : 'h-max'">
+    <article v-for="items in messagedata" class=" w-full pb-6 grid grid-cols-1 gap-4 place-items-center">
+        <div class="w-90 relative px-3 py-2 gap-4 rounded-xl overflow-hidden  border-4 tranform origin-top border-black shadow-[4px_4px_0_black] font-sans flex flex-col justify-between transition duration-300"
+            :class="[
+                statusbutton ? 'h-82' : 'h-max',
+                statusClass(items.Status)
+            ]">
             <img class="object-center object-cover w-full h-30" src="./../assets/image1.jpg" alt="" srcset="">
             <div class="flex flex-col">
                 <button @click="openpreview"
@@ -68,15 +92,16 @@ export default {
                     <h4 class="max text-[14px] text-center font-jakarta font-semibold"> {{ created(items.created_at) }}
                     </h4>
                 </div>
-                <p> {{ items.Deskripsikerusakan }} </p>
+                <p class="font-jakarta font-semibold text-[13px] text-zinc-900"> laptop asus 900 </p>
+                <p class="font-sora font-medium text-[14px] text-zinc-900"> {{ items.Deskripsikerusakan }} </p>
                 <div v-show="isadmin" @click="statusbutton = !statusbutton"
                     class="w-full h-max flex justify-end cursor-pointer">
                     <i class="duration-200 bi bi-chevron-down text-3xl"
                         :class="statusbutton ? 'rotate-180' : 'rotate-0'"></i>
                 </div>
             </div>
-            <Transition name="navanimate">
-                <div v-show="statusbutton" class="flex w-full justify-between">
+            <Transition>
+                <div v-show="statusbutton && isadmin" class="flex w-full justify-between">
                     <div class="flex gap-2">
                         <button class="statusbutton bg-red-700">alert</button>
                         <button class="statusbutton bg-sky-400 ">Done</button>
@@ -89,15 +114,31 @@ export default {
             </Transition>
         </div>
         <button
-            class="absolute cursor-pointer  w-12 h-12 bottom-5 right-5 bg-orange-600 shadow-[4px_4px_0_black] border-2">
+           @click="formopen = true" class="absolute cursor-pointer  w-12 h-12 bottom-5 right-5 bg-orange-600 shadow-[4px_4px_0_black] border-2">
             <i class="bi bi-plus text-3xl"></i>
         </button>
     </article>
-    <Transition name="navanimate">
-        <div @click.stop="closepreview" v-show="imgpreview"
-            class="fixed top-0 left-0 bg-zinc-900/20 w-screen h-screen flex justify-center items-center">
-            <img class="object-center object-cover w-85 h-60" src="./../assets/image1.jpg" alt="" srcset="">
-        </div>
-    </Transition>
+    <Backdrop :closepreview="closepreview" :imgpreview="imgpreview">
+        <img @click.stop class="object-center object-cover w-85 h-60" src="./../assets/image1.jpg" alt="" srcset="">
+    </Backdrop>
+    <Backdrop :closepreview="closeform" :imgpreview="formopen">
+        <form class="w-max h-max px-2 py-3 flex flex-col gap-3 items-center justify-center bg-blue-500 shadow-[4px_4px_0_black] border-3 " action=""
+            @submit.prevent="addproject" @click.stop>
+            <h1 class="text-3xl font-sora font-bold" >  new project </h1>
+            <label for="atasnama">
+                <h3 class="inputtext"> atas nama</h3>
+                <input ref="atasnama" class="inputstyle" type="text" name="atasnama" id="atasnama">
+            </label>
+            <label for="namaproduk">
+                <h3 class="inputtext"> nama produk </h3>
+                <input ref="namaproduk" class="inputstyle" type="text" name="namaproduk" id="namaproduk">
+            </label>
+            <label for="nomorhp">
+                <h3 class="inputtext"> nomor hp </h3>
+                <input ref="nomorhp" class="inputstyle" type="number" name="nomorhp" id="nomorhp">
+            </label>
+            <button type="submit" class="w-[80%] shadow-[4px_4px_0_black] border-4 hover:scale-90 transition h-max bg-green-500 py-2 font-sora text-2xl font-extrabold"> confirm </button>
+        </form>
+    </Backdrop>
 
 </template>

@@ -8,19 +8,41 @@
 .navitem{
     @apply block h-1 w-12 bg-zinc-100
 }
+.inputtext{
+    @apply text-2xl font-sora font-medium
+}
+.inputstyle{
+    @apply text-xl font-sora border-3 shadow-[2px_2px_0_black] px-1 py-1
+}
 .statusbutton{
   @apply border-2 font-jakarta text-xl font-bold shadow-[4px_4px_0_black] px-2 py-1 rounded-md 
 }
 
 .navanimate-enter-active {
-  transition: all 0.1s;
+  @apply duration-100 ;
 }
 
 .navanimate-leave-active {
-  transition: all 0.1s ;
+  @apply duration-100 ;
 }
 
-.navanimate-enter-from,
+.navanimate-enter-from{
+   @apply translate-x-100;  
+}
 .navanimate-leave-to {
-    @apply opacity-0;  
+    @apply translate-x-0;  
+}
+.formanimate-enter-active {
+  @apply duration-100 ;
+}
+
+.formanimaten-leave-active {
+  @apply duration-100 ;
+}
+
+.formanimate-enter-from{
+   @apply opacity-0;  
+}
+.formanimate-leave-to {
+    @apply opacity-1;  
 }
