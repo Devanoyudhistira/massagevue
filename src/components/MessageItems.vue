@@ -12,13 +12,8 @@ export default {
             statusbutton: false
         }
     },
-    props: ["isadmin"],
-    methods: {
-        async Getcustomer() {
-            const { data, error } = await supabase.schema('demoservice').from('workTodo').select()
-            this.customerData = data
-            return data
-        },
+    props: ["isadmin","messagedata"],
+    methods: {        
         sendingWa(number) {
             let massage = "barang sudah selesai diperbaiki segera datang ke kantor"
             const encodedMessage = encodeURIComponent(massage);
@@ -30,8 +25,7 @@ export default {
         created(date) {
             return dayjs(date).fromNow()
         },
-        openpreview(image) {
-            console.log(image)
+        openpreview(image) {            
             this.imgpreview = true
         },
         closepreview() {
@@ -52,26 +46,18 @@ export default {
                 .single()
         }
     },
-    watch: {
-        customerData() {
-            if (this.customerData) {
-                this.loading = false
-            }
-        }
-    },
-    mounted() {
-        this.Getcustomer()
-    }
+    mounted(){},
+    watch: {},    
+    
 }
 </script>
 
 <template>
-    <article v-for="items in customerData" class=" w-full grid grid-cols-1 gap-4 place-items-center">
+    <article v-for="items in messagedata" class=" w-full grid grid-cols-1 gap-4 place-items-center">
         <div class="w-90 relative px-3 py-2 gap-4 rounded-xl overflow-hidden bg-blue-400 border-3 tranform origin-top border-blue-600 shadow-[4px_4px_0_blue] font-sans flex flex-col justify-between transition duration-300"
             :class="statusbutton ? 'h-82' : 'h-max'">
             <img class="object-center object-cover w-full h-30" src="./../assets/image1.jpg" alt="" srcset="">
             <div class="flex flex-col">
-
                 <button @click="openpreview"
                     class="absolute hover:scale-80 transition focus:scale-70 w-8 h-8 rounded-full bg-zinc-100 shadow-[3px_3px_0_black] top-22 right-4 ">
                     <i class="bi bi-arrows-angle-expand text-xl "></i>
