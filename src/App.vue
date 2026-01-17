@@ -52,15 +52,13 @@ export default {
             </div>
         </nav>
         <Transition name="navanimate">
-            <div
-               v-if="shownav" class="w-[70%] h-screen duration-200 bg-orange-400 fixed z-10000 top-0 right-0 flex flex-col justify-between">
-                <div class="w-20 h-20 bg-red-600"></div>
+            <div v-if="shownav"
+                class="w-[70%] h-screen duration-200 bg-orange-400 fixed z-10000 top-0 right-0 flex justify-end flex-col">
                 <div class="w-full mb-8 h-max flex justify-center items-center">
                     <button
-                        class="w-[80%] h-15 border-black border-4 text-white cursor-pointer hover:scale-90 transition shadow-[4px_4px_0_black]" 
-                        :class="admin ? 'bg-blue-400' : 'bg-red-400'"
-                        >
-                        <h3 class="font-sora font-semibold text-3xl"> {{ admin ? 'create' : 'login' }}</h3>
+                        class="w-[80%] h-15 border-black border-4 text-white cursor-pointer hover:scale-90 transition shadow-[4px_4px_0_black]"
+                        :class="admin ? 'bg-blue-400' : 'bg-red-400'">
+                        <h3 class="font-sora font-semibold text-black text-3xl"> {{ admin ? 'create' : 'login' }}</h3>
                     </button>
                 </div>
             </div>

@@ -18,31 +18,26 @@
   @apply border-2 font-jakarta text-xl font-bold shadow-[4px_4px_0_black] px-2 py-1 rounded-md 
 }
 
-.navanimate-enter-active {
-  @apply duration-100 ;
-}
-
+.navanimate-enter-active,
 .navanimate-leave-active {
-  @apply duration-100 ;
+  @apply transition ;
 }
 
-.navanimate-enter-from{
-   @apply translate-x-100;  
-}
+.navanimate-enter-from,
 .navanimate-leave-to {
-    @apply translate-x-0;  
-}
-.formanimate-enter-active {
-  @apply duration-100 ;
+  @apply translate-x-100;
 }
 
-.formanimaten-leave-active {
-  @apply duration-100 ;
+
+
+.formanimate-enter-active,
+.formanimate-leave-active {
+  @apply transition ;
 }
 
 .formanimate-enter-from{
-   @apply opacity-0;  
+  @apply -translate-y-100
 }
 .formanimate-leave-to {
-    @apply opacity-1;  
+  @apply translate-y-100;
 }
