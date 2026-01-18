@@ -13,12 +13,11 @@ export default {
             loading: true,
             imgpreview: false,
             previewAsset: "",
-            statusbutton: false,
-            formopen: false,
+            statusbutton: false,            
             showmessage:false
         }
     },
-    props: ["isadmin", "messagedata","deleteproduct"],
+    props: ["isadmin", "messagedata","deleteproduct","formopen","closeform"],
     methods: {
         sendingWa(number) {
             let massage = "barang sudah selesai diperbaiki segera datang ke kantor";
@@ -36,14 +35,13 @@ export default {
         },
         closepreview() {
             this.imgpreview = false
-        },
-        closeform() {
-            this.formopen = false
-        },        
+        },              
         openstatus(cardtarget) {            
             const statustarget = this.$refs.productcard[cardtarget]
+            const projecttarget = this.$refs.projectcard[cardtarget]
             this.statusbutton = !this.statusbutton
-            if (this.statusbutton) statustarget.classList.replace('hidden', 'flex')
+            if (this.statusbutton) 
+            statustarget.classList.replace('hidden', 'flex')
             else {
                 this.$refs.productcard.forEach(e => {
                     e.classList.replace('flex', 'hidden')
@@ -97,9 +95,9 @@ export default {
 
 <template>
     <Flashmessage :showmessage="showmessage" :message="'created success'" :statusmessage="true" :closemessage="() => showmessage = false"  />
-    <article v-for="(items, index) in messagedata"
-        class=" w-full h-82 overflow-y-hidden px-2 pb-6 grid grid-cols-1 gap-4 place-items-center overflow-x-hidden mt-1">
-        <div class="w-80 relative px-3 py-2 gap-4 rounded-xl overflow-hidden  border-4 tranform origin-top border-black shadow-[4px_4px_0_black] font-sans flex flex-col justify-between transition duration-300"
+    <article 
+        class=" w-full h-80vw overflow-y-hidden px-2 pb-28 grid grid-cols-1 gap-4 place-items-center overflow-x-hidden mt-1">
+        <div v-for="(items, index) in messagedata" ref="projectcard" class="w-80 relative px-3 py-2 gap-4 rounded-xl overflow-hidden border-4 tranform origin-top border-black shadow-[4px_4px_0_black] font-sans flex flex-col justify-between transition duration-300"
             :class="[
                 statusClass(items.Status)
             ]">
@@ -144,14 +142,12 @@ export default {
                 </div>
             </Transition>
         </div>        
-    </article>
-    <button v-show="isadmin" @click="formopen = true"
-            class="absolute cursor-pointer  w-12 h-12 bottom-5 right-5 bg-orange-600 shadow-[4px_4px_0_black] border-2">
-            <i class="bi bi-plus text-3xl"></i>
-        </button>
+    </article>    
+
     <Backdrop :closepreview="closepreview" :imgpreview="imgpreview">
         <img @click.stop class="object-center object-cover w-85 h-60" src="./../assets/image1.jpg" alt="" srcset="">
     </Backdrop>
+
     <Backdrop :closepreview="closeform" :imgpreview="formopen">
         <form
             class="w-max h-max px-2 py-3 flex flex-col gap-3 items-center justify-center bg-blue-500 shadow-[4px_4px_0_black] border-3 "
@@ -159,7 +155,7 @@ export default {
             <h1 class="text-3xl font-sora font-bold"> new project </h1>
             <label for="atasnama">
                 <h3 class="inputtext"> atas nama</h3>
-                <input ref="atasnama" class="inputstyle" type="text" name="atasnama" id="atasnama">
+                <input autocomplete="off" ref="atasnama" class="inputstyle" type="text" name="atasnama" id="atasnama">
             </label>
             <label for="namaproduk">
                 <h3 class="inputtext"> nama produk </h3>
@@ -167,7 +163,7 @@ export default {
             </label>
             <label for="nomorhp">
                 <h3 class="inputtext"> nomor hp </h3>
-                <input ref="nomorhp" class="inputstyle" type="number" name="nomorhp" id="nomorhp">
+                <input autocomplete="off" ref="nomorhp" class="inputstyle" type="number" name="nomorhp" id="nomorhp">
             </label>
             <button type="submit"
                 class="w-[80%] shadow-[4px_4px_0_black] border-4 hover:scale-90 transition h-max bg-green-500 py-2 font-sora text-2xl font-extrabold">
