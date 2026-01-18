@@ -5,7 +5,7 @@ import Backdrop from './Backdrop.vue';
 import Flashmessage from './Flashmessage.vue';
 
 export default {
-    components: { Backdrop,Flashmessage },
+    components: { Backdrop, Flashmessage },
 
     data() {
         return {
@@ -13,15 +13,26 @@ export default {
             loading: true,
             imgpreview: false,
             previewAsset: "",
-            statusbutton: false,            
-            showmessage:false
+            statusbutton: false,
+            showmessage: false
         }
     },
-    props: ["isadmin", "messagedata","deleteproduct","formopen","closeform"],
+    props: ["isadmin", "messagedata", "deleteproduct", "formopen", "closeform","updateproject"],
     methods: {
-        sendingWa(number) {
-            let massage = "barang sudah selesai diperbaiki segera datang ke kantor";
-            const encodedMessage = encodeURIComponent(massage);
+        sendingWa(number,status) {
+            let message = "";
+            switch (status) {
+                case "finish":
+                    message = "barang anda sudah selesai dan sudah bisa di ambil"
+                    break;                
+                case "pending":
+                    message = "barang sedang dalam perbaikan"
+                    break;                
+                default:
+                    message = "barang anda memiliki masalah segera ke warung"
+                    break;
+            }
+            const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/+${number}?text=${encodedMessage}`;
 
             window.open(whatsappUrl, '_blank');
@@ -35,19 +46,20 @@ export default {
         },
         closepreview() {
             this.imgpreview = false
-        },              
-        openstatus(cardtarget) {            
+        },
+        openstatus(cardtarget) {
             const statustarget = this.$refs.productcard[cardtarget]
             const projecttarget = this.$refs.projectcard[cardtarget]
             this.statusbutton = !this.statusbutton
-            if (this.statusbutton) 
-            statustarget.classList.replace('hidden', 'flex')
+            if (this.statusbutton)
+                statustarget.classList.replace('hidden', 'flex')
             else {
                 this.$refs.productcard.forEach(e => {
                     e.classList.replace('flex', 'hidden')
                 })
             }
         },
+        
         async addproject() {
             const { data, error } = await supabase
                 .schema('demoservice').from('workTodo')
@@ -61,12 +73,11 @@ export default {
                     Namabarang: this.$refs.namaproduk.value
                 }).select()
                 .single()
-                if(data)
-                {
-                this.formopen = false
+            if (data) {
+                this.closeform                
                 this.messagedata.push(data)
                 this.showmessage = true
-                }
+            }
 
             // console.log(data)
             // console.log(error)
@@ -83,7 +94,7 @@ export default {
     },
     mounted() {
         this.customerdata = this.messagedata
-        console.log(this.customerdata)                      
+        console.log(this.customerdata)
     },
     computed: {},
     watch: {
@@ -94,10 +105,12 @@ export default {
 </script>
 
 <template>
-    <Flashmessage :showmessage="showmessage" :message="'created success'" :statusmessage="true" :closemessage="() => showmessage = false"  />
-    <article 
+    <Flashmessage :showmessage="showmessage" :message="'created success'" :statusmessage="true"
+        :closemessage="() => showmessage = false" />
+    <article
         class=" w-full h-80vw overflow-y-hidden px-2 pb-28 grid grid-cols-1 gap-4 place-items-center overflow-x-hidden mt-1">
-        <div v-for="(items, index) in messagedata" ref="projectcard" class="w-80 relative px-3 py-2 gap-4 rounded-xl overflow-hidden border-4 tranform origin-top border-black shadow-[4px_4px_0_black] font-sans flex flex-col justify-between transition duration-300"
+        <div v-for="(items, index) in messagedata" ref="projectcard"
+            class="w-80 relative px-3 py-2 gap-4 rounded-xl overflow-hidden border-4 tranform origin-top border-black shadow-[4px_4px_0_black] font-sans flex flex-col justify-between transition duration-300"
             :class="[
                 statusClass(items.Status)
             ]">
@@ -122,27 +135,28 @@ export default {
                 </div>
             </div>
             <Transition>
-                <div ref="productcard" v-show="isadmin && statusbutton" class="hidden w-full justify-between">
+                <div ref="productcard" v-show="isadmin && statusbutton" class="hidden w-full justify-between flex-col gap-2">
                     <div class="flex gap-2">
-                        <button class="statusbutton bg-red-700">alert</button>
-                        <button class="statusbutton bg-sky-400 ">Done</button>
+                        <button @click="() => updateproject('error',items.id)" class="statusbutton bg-red-700">alert</button>
+                        <button @click="() => updateproject('finish',items.id)" class="statusbutton bg-sky-400 ">Done</button>
+                        <button @click="() => updateproject('pending',items.id)" class="statusbutton bg-yellow-400 ">Proses</button>
                     </div>
 
-                    <div class="flex gap-2" >
+                    <div class="flex gap-2">
                         <button @click="() => deleteproduct(items.id)"
                             class="w-12 h-12  bg-red-600 text-black text-md border-2 border-black shadow-[3px_3px_0_black]">
                             <i class="bi bi-trash text-3xl ">
                             </i> </button>
 
-                        <button @click="() => sendingWa(items.Nomer_hp)"
+                        <button @click="() => sendingWa(items.Nomer_hp,items.Status)"
                             class="w-12 h-12  bg-green-600 text-black text-md border-2 border-black shadow-[3px_3px_0_black]">
                             <i class="bi bi-whatsapp text-2xl ">
                             </i> </button>
                     </div>
                 </div>
             </Transition>
-        </div>        
-    </article>    
+        </div>
+    </article>
 
     <Backdrop :closepreview="closepreview" :imgpreview="imgpreview">
         <img @click.stop class="object-center object-cover w-85 h-60" src="./../assets/image1.jpg" alt="" srcset="">

@@ -34,10 +34,24 @@ export default {
             this.customerData = data
             return data
         },
+        async updateproject(status, target) {
+            const { error, data } = await supabase.schema("demoservice")
+                .from('workTodo').update({ Status: status }).eq('id', target)
+                .select().single()
+            if (data) {                
+                    this.customerData = this.customerData.map(e =>
+                        e.id === target
+                            ? { ...e, Status: status }
+                            : e
+                    )                
+            }
+            return
+        },
         closeloginform() {
             this.loginform = false
         },
         openform() {
+            this.shownav = false
             this.loginform = true
         },
         async deleteproduct(target) {
@@ -46,7 +60,7 @@ export default {
             const deleteresult = this.customerData.filter(e => e.id !== target)
             this.customerData = deleteresult
             console.log(deleteresult)
-        },
+        },        
     },
     mounted() {
         supabase.auth.onAuthStateChange((_event, session) => {
@@ -78,12 +92,12 @@ export default {
                     <button @click="openform"
                         class="w-[80%] mb-3 h-15 border-black border-4 text-white cursor-pointer hover:scale-90 transition shadow-[4px_4px_0_black]"
                         :class="admin ? 'bg-blue-400' : 'bg-red-400'">
-                        <h3 class="font-sora font-semibold text-black text-3xl"> {{ admin ? 'create' : 'login' }}</h3>
+                        <h3 class="font-sora font-semibold text-black text-3xl"> {{ admin ? 'create' : 'log out' }}</h3>
                     </button>
                 </div>
             </div>
         </Transition>
-        <MessageItems :closeform="() => this.formopen = false" :formopen="formopen" :deleteproduct="deleteproduct" :messagedata="customerData" :isadmin="admin" />
+        <MessageItems :updateproject="updateproject" :closeform="() => this.formopen = false" :formopen="formopen" :deleteproduct="deleteproduct" :messagedata="customerData" :isadmin="admin" />
         <Footer>
             <!--  -->
             <button v-show="admin" @click="formopen = true"
