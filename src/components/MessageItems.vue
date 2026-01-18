@@ -96,7 +96,11 @@ export default {
         this.customerdata = this.messagedata
         console.log(this.customerdata)
     },
-    computed: {},
+    computed: {
+        allproject(){
+            return this.messagedata
+        }
+    },
     watch: {
 
     },
@@ -109,7 +113,7 @@ export default {
         :closemessage="() => showmessage = false" />
     <article
         class=" w-full h-80vw overflow-y-hidden px-2 pb-28 grid grid-cols-1 gap-4 place-items-center overflow-x-hidden mt-1">
-        <div v-for="(items, index) in messagedata" ref="projectcard"
+        <div v-for="(items, index) in allproject" ref="projectcard"
             class="w-80 relative px-3 py-2 gap-4 rounded-xl overflow-hidden border-4 tranform origin-top border-black shadow-[4px_4px_0_black] font-sans flex flex-col justify-between transition duration-300"
             :class="[
                 statusClass(items.Status)
@@ -126,7 +130,7 @@ export default {
                     <h4 class="max text-[14px] text-center font-jakarta font-semibold"> {{ created(items.created_at) }}
                     </h4>
                 </div>
-                <p class="font-jakarta font-semibold text-[13px] text-zinc-900"> laptop asus 900 </p>
+                <p class="font-jakarta font-semibold text-[13px] text-zinc-900"> {{ items.NamaBarang }} </p>
                 <p class="font-sora font-medium text-[14px] text-zinc-900"> {{ items.Deskripsikerusakan }} </p>
                 <div v-show="isadmin" @click="() => openstatus(index)"
                     class="w-full h-max flex justify-end cursor-pointer">

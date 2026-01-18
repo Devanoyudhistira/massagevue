@@ -77,9 +77,9 @@ export default {
     <Login :closelogin="closeloginform" :showlogin="loginform" />
     <main v-if="customerData" class="w-screen overflow-x-hidden flex flex-col gap-3 items-center justify-center ">
         <Flashmessage />
-        <nav class="bg-zinc-900 flex items-center justify-between px-2 w-full h-16">
+        <nav  class="bg-zinc-900 flex items-center justify-between px-2 w-full h-16">
             <h1 class="text-3xl font-sora text-zinc-100"> Tailors </h1>
-            <div class="flex flex-col gap-2 z-20000" @click="shownav = !shownav">
+            <div v-show="!admin" class="flex flex-col gap-2 z-20000" @click="shownav = !shownav">
                 <span class="navitem"></span>
                 <span class="navitem"></span>
                 <span class="navitem"></span>
