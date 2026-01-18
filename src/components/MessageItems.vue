@@ -2,24 +2,26 @@
 import supabase from '@/library/supabase.js';
 import dayjs from '@/library/day.js';
 import Backdrop from './Backdrop.vue';
+import Flashmessage from './Flashmessage.vue';
 
 export default {
-    components: { Backdrop },
+    components: { Backdrop,Flashmessage },
 
     data() {
         return {
-            customerData: [],
+            customerData: this.messagedata,
             loading: true,
             imgpreview: false,
             previewAsset: "",
             statusbutton: false,
-            formopen: false
+            formopen: false,
+            showmessage:false
         }
     },
-    props: ["isadmin", "messagedata"],
+    props: ["isadmin", "messagedata","deleteproduct"],
     methods: {
         sendingWa(number) {
-            let massage = "barang sudah selesai diperbaiki segera datang ke kantor"
+            let massage = "barang sudah selesai diperbaiki segera datang ke kantor";
             const encodedMessage = encodeURIComponent(massage);
             const whatsappUrl = `https://wa.me/+${number}?text=${encodedMessage}`;
 
@@ -37,16 +39,14 @@ export default {
         },
         closeform() {
             this.formopen = false
-        },
-        openstatus(cardtarget) {
-            console.log(cardtarget)
-            console.log(this.$refs.productcard[cardtarget])
+        },        
+        openstatus(cardtarget) {            
             const statustarget = this.$refs.productcard[cardtarget]
             this.statusbutton = !this.statusbutton
             if (this.statusbutton) statustarget.classList.replace('hidden', 'flex')
             else {
                 this.$refs.productcard.forEach(e => {
-                    e.classList.replace('flex','hidden')
+                    e.classList.replace('flex', 'hidden')
                 })
             }
         },
@@ -63,8 +63,15 @@ export default {
                     Namabarang: this.$refs.namaproduk.value
                 }).select()
                 .single()
-            console.log(data)
-            console.log(error)
+                if(data)
+                {
+                this.formopen = false
+                this.messagedata.push(data)
+                this.showmessage = true
+                }
+
+            // console.log(data)
+            // console.log(error)
         },
         statusClass(itemStatus) {
             if (itemStatus === 'finish') {
@@ -77,7 +84,8 @@ export default {
         }
     },
     mounted() {
-        console.log(this.$refs.productcard)
+        this.customerdata = this.messagedata
+        console.log(this.customerdata)                      
     },
     computed: {},
     watch: {
@@ -88,9 +96,10 @@ export default {
 </script>
 
 <template>
+    <Flashmessage :showmessage="showmessage" :message="'created success'" :statusmessage="true" :closemessage="() => showmessage = false"  />
     <article v-for="(items, index) in messagedata"
-        class=" w-full h-82 overflow-y-hidden pb-6 grid grid-cols-1 gap-4 place-items-center overflow-x-hidden ">
-        <div class="w-90 relative px-3 py-2 gap-4 rounded-xl overflow-hidden  border-4 tranform origin-top border-black shadow-[4px_4px_0_black] font-sans flex flex-col justify-between transition duration-300"
+        class=" w-full h-82 overflow-y-hidden px-2 pb-6 grid grid-cols-1 gap-4 place-items-center overflow-x-hidden mt-1">
+        <div class="w-80 relative px-3 py-2 gap-4 rounded-xl overflow-hidden  border-4 tranform origin-top border-black shadow-[4px_4px_0_black] font-sans flex flex-col justify-between transition duration-300"
             :class="[
                 statusClass(items.Status)
             ]">
@@ -120,18 +129,26 @@ export default {
                         <button class="statusbutton bg-red-700">alert</button>
                         <button class="statusbutton bg-sky-400 ">Done</button>
                     </div>
-                    <button @click="() => sendingWa(items.Nomer_hp)"
-                        class="w-12 h-12  bg-green-600 text-black text-md border-2 border-black shadow-[3px_3px_0_black]">
-                        <i class="bi bi-whatsapp text-2xl ">
-                        </i> </button>
+
+                    <div class="flex gap-2" >
+                        <button @click="() => deleteproduct(items.id)"
+                            class="w-12 h-12  bg-red-600 text-black text-md border-2 border-black shadow-[3px_3px_0_black]">
+                            <i class="bi bi-trash text-3xl ">
+                            </i> </button>
+
+                        <button @click="() => sendingWa(items.Nomer_hp)"
+                            class="w-12 h-12  bg-green-600 text-black text-md border-2 border-black shadow-[3px_3px_0_black]">
+                            <i class="bi bi-whatsapp text-2xl ">
+                            </i> </button>
+                    </div>
                 </div>
             </Transition>
-        </div>
-        <button v-show="isadmin" @click="formopen = true"
+        </div>        
+    </article>
+    <button v-show="isadmin" @click="formopen = true"
             class="absolute cursor-pointer  w-12 h-12 bottom-5 right-5 bg-orange-600 shadow-[4px_4px_0_black] border-2">
             <i class="bi bi-plus text-3xl"></i>
         </button>
-    </article>
     <Backdrop :closepreview="closepreview" :imgpreview="imgpreview">
         <img @click.stop class="object-center object-cover w-85 h-60" src="./../assets/image1.jpg" alt="" srcset="">
     </Backdrop>
@@ -154,7 +171,8 @@ export default {
             </label>
             <button type="submit"
                 class="w-[80%] shadow-[4px_4px_0_black] border-4 hover:scale-90 transition h-max bg-green-500 py-2 font-sora text-2xl font-extrabold">
-                confirm </button>
+                confirm
+            </button>
         </form>
     </Backdrop>
 

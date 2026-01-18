@@ -28,6 +28,16 @@
   @apply translate-x-100;
 }
 
+.flashmessage-enter-active,
+.flashmessage-leave-active {
+  @apply duration-150;
+}
+
+.flashmessage-enter-from,
+.flashmessage-leave-to {
+  @apply scale-0;
+}
+
 
 
 .formanimate-enter-active,
