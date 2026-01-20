@@ -23,6 +23,9 @@ export default {
             customerData: null,
             loginform: false,
             formopen:false,
+            showmessage:false,
+            message:"error",
+            statusmessage:false,            
         }
     },
     watch: {
@@ -58,8 +61,11 @@ export default {
             console.log(target)
             const { count, data, error } = await supabase.schema("demoservice").from("workTodo").delete().eq('id', target);
             const deleteresult = this.customerData.filter(e => e.id !== target)
-            this.customerData = deleteresult
-            console.log(deleteresult)
+            this.customerData = deleteresult            
+            this.showmessage = true
+            this.message = "delete success"
+            this.statusmessage = true
+            
         },        
     },
     mounted() {
@@ -75,9 +81,10 @@ export default {
 
 <template>
     <Login :closelogin="closeloginform" :showlogin="loginform" />
-    <main v-if="customerData" class="w-screen overflow-x-hidden flex flex-col gap-3 items-center justify-center ">
-        <Flashmessage />
-        <nav  class="bg-zinc-900 flex items-center justify-between px-2 w-full h-16">
+    <Flashmessage :showmessage="showmessage" :message="message" :statusmessage="statusmessage"
+        :closemessage="() => showmessage = false" />
+    <main v-if="customerData" class="w-screen overflow-x-hidden flex flex-col gap-3 items-center justify-center ">        
+        <nav class="bg-zinc-900 flex z-102334 fixed top-0 items-center justify-between px-2 w-full h-16">            
             <h1 class="text-3xl font-sora text-zinc-100"> Tailors </h1>
             <div v-show="!admin" class="flex flex-col gap-2 z-20000" @click="shownav = !shownav">
                 <span class="navitem"></span>
