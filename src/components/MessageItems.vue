@@ -82,6 +82,7 @@ export default {
                 this.message = "sucesfully created"
                 return
             }
+            console.log(error)
             this.showmessage = true
             this.statusmessage = false,
             this.message = "creation fail"
@@ -181,7 +182,7 @@ export default {
                 <h3 class="inputtext"> atas nama</h3>
                 <input autocomplete="off" ref="atasnama" class="inputstyle" type="text" name="atasnama" id="atasnama">
             </label>
-            <label for="namaproduk">
+            <label for="namaproduk">            
                 <h3 class="inputtext"> nama produk </h3>
                 <input ref="namaproduk" class="inputstyle" type="text" name="namaproduk" id="namaproduk">
             </label>
@@ -191,7 +192,7 @@ export default {
             </label>
             <label for="Biaya">
                 <h3 class="inputtext"> Biaya </h3>
-                <input autocomplete="off" ref="biaya" class="inputstyle" type="number" name="nomorhp" id="nomorhp">
+                <input autocomplete="off" ref="biaya" step="any" class="inputstyle" type="number" name="nomorhp" id="nomorhp">
             </label>
             <button type="submit"
                 class="w-[80%] shadow-[4px_4px_0_black] border-4 hover:scale-90 transition h-max bg-green-500 py-2 font-sora text-2xl font-extrabold">
