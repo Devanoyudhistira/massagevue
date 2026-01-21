@@ -5,7 +5,9 @@ import Backdrop from './Backdrop.vue';
 export default {
     props: ["closelogin", "showlogin"],
     data() {
-        return {}
+        return {
+        failauth:false,                        
+        }
     },
     components: {
         Backdrop
@@ -19,11 +21,14 @@ export default {
                 password: userpassword,
             })
             if (error) {
-                console.log(error)
+                this.failauth = true
                 return
             }
         }
     },
+    computed:{
+
+    }
 }
 </script>
 
@@ -32,6 +37,7 @@ export default {
         <form @click.stop @submit.prevent="login"
             class=" z-100 flex flex-col p-3 absolute top-45 left-15 lg:left-[40vw] bg-red-400 border-4 shadow-[4px_4px_0_black] gap-3 items-center justify-center">
             <h1 class="w-42 text-center font-sora text-2xl ">login as an admin here</h1>
+            <h1 class="font-jakarta text-2xl font-bold text-red-600"  v-show="failauth" > wrong credential try again </h1>
             <label for="email">
                 <h1 class="text-xl font-jakarta font-medium">email</h1>
                 <input class="inputstyle" type="email" ref="email" name="email" id="email">

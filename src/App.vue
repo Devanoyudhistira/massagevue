@@ -99,7 +99,7 @@ export default {
                     <button @click="openform"
                         class="w-[80%] mb-3 h-15 border-black border-4 text-white cursor-pointer hover:scale-90 transition shadow-[4px_4px_0_black]"
                         :class="admin ? 'bg-blue-400' : 'bg-red-400'">
-                        <h3 class="font-sora font-semibold text-black text-3xl"> {{ admin ? 'create' : 'log out' }}</h3>
+                        <h3 class="font-sora font-semibold text-black text-3xl"> log In</h3>
                     </button>
                 </div>
             </div>

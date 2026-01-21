@@ -60,8 +60,7 @@ export default {
                     e.classList.replace('flex', 'hidden')
                 })
             }
-        },
-        
+        },        
         async addproject() {
             const { data, error } = await supabase
                 .schema('demoservice').from('workTodo')
